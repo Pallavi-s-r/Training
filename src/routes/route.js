@@ -1,55 +1,143 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const logger = require('../logger/logger.js')
-const util = require('../util/helper.js')
-const validator = require('../validator/formatter.js')
+const logger = require("../logger/logger.js");
+const util = require("../util/helper.js");
+const validator = require("../validator/formatter.js");
 
-const _ = require('lodash');
+const _ = require("lodash");
 
-
-router.get('/test-me', function (req, res) {
+router.get("/logger", function (req, res) {
     logger.welcome("Pallavi");
+    res.send("Working");
+});
 
-    util.date();
-    util.month();
-    util.getBatchInfo("Technetium", 3,4 , "NodeJs Module");
+router.get("/test-me", function (req, res) {
 
-    validator.trimmed(" functionUp ");
-    validator.changeToLowerCase("functionUp");
-    validator.changeToUpperCase("functionUp");
+  util.date();
+  util.month();
+  util.getBatchInfo("Technetium", 3, 4, "NodeJs Module");
 
-    //1
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const subArrays = _.chunk(months, 3);
-console.log(subArrays);
+  validator.trimmed(" functionUp ");
+  validator.changeToLowerCase("functionUp");
+  validator.changeToUpperCase("functionUp");
 
-//2
-const oddNumbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const lastNineNumbers = _.tail(oddNumbers);
-console.log(lastNineNumbers);
+  //1
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const subArrays = _.chunk(months, 3);
+  console.log(subArrays);
 
-//3
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 4, 6, 7, 8];
-const array3 = [7, 8, 8, 10, 11,5];
-const array4 = [10, 11, 12, 13, 14];
-const array5 = [13, 14, 15, 16, 17];
-const mergedArray = _.union(array1, array2, array3, array4, array5);
-console.log(mergedArray); 
+  //2
+  const oddNumbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+  const lastNineNumbers = _.tail(oddNumbers);
+  console.log(lastNineNumbers);
 
-//4 - 
+  //3
+  const array1 = [1, 2, 3, 4, 5];
+  const array2 = [4, 4, 6, 7, 8];
+  const array3 = [7, 8, 8, 10, 11, 5];
+  const array4 = [10, 11, 12, 13, 14];
+  const array5 = [13, 14, 15, 16, 17];
+  const mergedArray = _.union(array1, array2, array3, array4, array5);
+  console.log(mergedArray);
 
-const keyValuePairArray = [['horror', 'The Shining'], ['drama', 'Titanic'], ['thriller', 'Shutter Island'], ['fantasy', 'Pans Labyrinth']];
-const object = _.fromPairs(keyValuePairArray);
-console.log(object); 
+  //4 -
 
+  const keyValuePairArray = [
+    ["horror", "The Shining"],
+    ["drama", "Titanic"],
+    ["thriller", "Shutter Island"],
+    ["fantasy", "Pans Labyrinth"],
+  ];
+  const object = _.fromPairs(keyValuePairArray);
+  console.log(object);
 
-    res.send('My first ever api!')
+  res.send("My first ever api!");
 });
 
 
+//assignment - get api
 
+//1-
+//Create an API for GET /movies that returns a list of movies. Define an array of movies in your code and return the value in response.
+
+const movies = [
+  { title: 'IronMan'},
+  { title: 'SpiderMan Homecoming'},
+  { title: 'Lucy - the spy' },
+];
+
+router.get('/movies', function(req, res){
+  res.send(movies);
+});
+
+//2+3
+//Create an API GET /movies/:indexNumber (For example GET /movies/1 is a valid request and it should return the movie in your array at index 1). You can define an array of movies again in your api
+//Handle a scenario in problem 2 where if the index is greater than the valid maximum value or smaller that the valid minimum value, a message is returned that tells the user to use a valid index in an error message.
+
+const movies1 = [
+  { title: 'The Godfather'},
+  { title: 'Boss' },
+  { title: 'Housefull' },
+];
+
+router.get('/movies1/:indexNumber', function(req,res){
+  // console.log(req.params.indexNumber);
+  const indexNumber = req.params.indexNumber;
+  const movie = movies1[indexNumber];
+  if(movies1){
+  res.send(movie)
+  }
+  else (indexNumber < 0 || indexNumber >= movies1.length)
+  res.send("eneter valid index number");
+  
+});
+
+
+//4-
+const films =
+[ {
+  id : 1,
+  name : " The Shining "
+ }, {
+  id : 2,
+  name: "Incendies"
+ }, {
+  id : 3,
+  name : "Rang de Basanti"
+ }, {
+  id : 4,
+  name : "Finding Nemo"
+ }];
+ 
+
+ router.get('/films', function(req, res){
+  res.send(films);
+ });
+
+ router.get('/films/:filmId', function(req,res){
+  const filmId = req.params.filmId;
+  const film = films[filmId];
+  if(films){
+  res.send(film)
+  }
+  else (filmId < 0 || filmId >= films.length)
+  res.send("eneter valid index number");
+  
+ })
 module.exports = router;
 
 /**
