@@ -2,55 +2,65 @@ const express = require("express");
 const router = express.Router();
 
 
-let players =  [
+/** 
+ASSIGNMENT:
+you will be given an array of persons ( i.e an array of objects )..each person will have  a {name: String , age: Number, votingStatus: true/false(Boolean)}
+take input in query param as votingAge..and for all the people above that age, change votingStatus as true
+also return an array consisting of only the person that can vote
+
+WRITE A POST API TO THE ABOVE
+take this as sample for array of persons:*/
+
+
+let persons = [
   {
-    "name" :"manish",
-    "dob"  : "1/1/1995",
-    "gender" : "male",
-    "city" :"jalandhar",
-    "sports": [
-      "swimming"
-    ]
+    name: "PK",
+    age: 10,
+    votingStatus: false
   },
   {
-    "name" :"gopal",
-    "dob"  : "1/09/1995",
-    "gender" : "male",
-    "city" :"delhi",
-    "sports": [
-      "soccer"
-    ]
+    name: "SK",
+    age: 20,
+    votingStatus: false
   },
   {
-    "name" :"lokesh",
-    "dob"  : "1/1/1990",
-    "gender" : "male",
-    "city" :"mumbai",
-    "sports": [
-      "soccer"
-    ]
+    name: "AA",
+    age: 70,
+    votingStatus: false
   },
-
-]
-
-//1 - Write a POST /players api that creates a new player ( i.e. that saves a player’s details and doesn’t allow saving the data of a player with a name that already exists in the data)
-
-
-router.post('/players', function(req,res){
-
-  const {name, dob, gender, city, sports} = req.body;
-
-  if(players.some(player => player.name === name)){
-    res.send({message : 'Player name already exist'})
+  {
+    name: "SC",
+    age: 5,
+    votingStatus: false
+  },
+  {
+    name: "HO",
+    age: 40,
+    votingStatus: false
   }
+];
 
-  const newPlayer = {
-    name, dob, city, gender, sports
-  };
+router.post('/person', function(req, res) {
+  const votingAge = parseInt(req.query.votingAge); //  votingAge from query parameter
+  persons.forEach(person => {
+    if (person.age >= votingAge) {
+      person.votingStatus = true; // Updating votingStatus -> votingAge
+    } else {
+      person.votingStatus = false;
+    }
+  });
+  const eligiblePersons = persons.filter(person => person.votingStatus); //  who can vote
+  res.send(eligiblePersons);
+  
 
-  players.push(newPlayer);
-  res.send({message:'Player added' ,  data:players, status : true})
+  //or 
 
-})
+  router.post('/person', (req, res) => {
+    const votingAge = parseInt(req.query.votingAge);
+    const eligiblePersons = persons.filter(person => person.age >= votingAge);
+    eligiblePersons.forEach(person => person.votingStatus = true);
+    res.send(eligiblePersons);
+  });
+});
 
 module.exports = router;
