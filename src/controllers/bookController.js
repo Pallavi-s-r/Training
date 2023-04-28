@@ -1,14 +1,70 @@
 const { count } = require("console")
-const BookModel= require("../models/bookModel")
+const BookModel = require("../models/bookModel.js");
 
-const createBook= async function (req, res) {
-    let data= req.body
-
-    let savedData= await BookModel.create(data)
+const createBooks = async function(req, res){
+    let data = req.body
+    let savedData = await BookModel.create(data);
     res.send({msg: savedData})
 }
 
-const getBooksData= async function (req, res) {
+const getBooksData = async function(req,res){
+    let allBooks = await BookModel.find();
+    res.send({msg: allBooks});
+}
+
+const getBookList = async function(req, res){
+  let books = await BookModel.find({},{bookName:1,authorname:1})
+  res.send({msg : books})
+}
+
+const getBooksInYear = async function(req,res){
+    // let years = req.body.year
+    let booksByYear = await BookModel.find({year:1949},{bookName:1,authorname:1})
+    res.send({msg :booksByYear})
+}
+
+const getParticularBooks = async function(req, res){
+ let specifiedBook = await BookModel.find({
+    
+          $or: [ {authorName : "Emily Bronte" } , { stockAvailable: true } , {  "year": 1847 }]
+     } ).select( { bookName: 1, authorname: 1, _id: 0})
+
+     res.send ({ msg : specifiedBook})
+}
+
+const getXINRBooks = async function(req,res){
+    let priceInr = await BookModel.find(
+        { INR: { $in: [200, 300] } }, { bookName: 1, authorname: 1 })
+
+     res.send({msg:priceInr})
+}
+
+const randomBooks = async function(req,res){
+    let randomBooks = await BookModel.find({
+        $or : [{stockAvailable:true},{totalPages:500}]
+    },{ bookName: 1, authorname: 1 })
+    res.send({msg : randomBooks})
+   
+}
+// const randomBooks = async function (req, res) {
+//     try {
+//       const randoms = await BookModel.find({ $or: [{ stockAvailable: true }, { totalPages: 500 }] }, { bookName: 1, authorname: 1 });
+//       res.send({ msg: randoms });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send({ error: 'Internal Server Error' });
+//     }
+//   };
+  
+
+
+module.exports.createBooks = createBooks;
+module.exports.getBooksData = getBooksData;
+module.exports.getBookList = getBookList;
+module.exports.getBooksInYear = getBooksInYear;
+module.exports.getParticularBooks = getParticularBooks;
+module.exports.getXINRBooks = getXINRBooks;
+module.exports.randomBooks = randomBooks;
 
     // let allBooks= await BookModel.find( ).count() // COUNT
 
@@ -65,21 +121,18 @@ const getBooksData= async function (req, res) {
     
     // ASYNC AWAIT
     
-    let a= 2+4
-    a= a + 10
-    console.log(a)
-    let allBooks= await BookModel.find( )  //normally this is an asynchronous call..but await makes it synchronous
+//     let a= 2+4
+//     a= a + 10
+//     console.log(a)
+//     let allBooks= await BookModel.find( )  //normally this is an asynchronous call..but await makes it synchronous
 
 
-    // WHEN AWAIT IS USED: - database + axios
-    //  AWAIT can not be used inside forEach , map and many of the array functions..BE CAREFUL
-    console.log(allBooks)
-    let b = 14
-    b= b+ 10
-    console.log(b)
-    res.send({msg: allBooks})
-}
+//     // WHEN AWAIT IS USED: - database + axios
+//     //  AWAIT can not be used inside forEach , map and many of the array functions..BE CAREFUL
+//     console.log(allBooks)
+//     let b = 14
+//     b= b+ 10
+//     console.log(b)
+//     res.send({msg: allBooks})
+// }
 
-
-module.exports.createBook= createBook
-module.exports.getBooksData= getBooksData

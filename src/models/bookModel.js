@@ -1,31 +1,59 @@
 const mongoose = require('mongoose');
 
-const bookSchema = new mongoose.Schema( {
-    bookName: String, 
-    authorName: String, 
-    tags: [String],
-    
-    isPublished: Boolean,
-    prices: {
-        indianPrice: String,
-        europePrice: String,
+const bookSchema = new mongoose.Schema({
+
+    bookName: {
+        type: String,
+        required: true,
     },
-    sales: {type: Number, default: 10}
-}, { timestamps: true });
+
+    authorname:{
+        type :String
+    } ,
+
+    tags: [String],
+
+    year: {
+        type: Number,
+        default: "2021"
+    },
+
+    price: {
+        INR: String,
+        EUR: String
+    },
+
+    totalPages: Number,
+
+    stockAvailable: Boolean
+
+}, { timestamp: true })
 
 
-module.exports = mongoose.model('Book', bookSchema) //users
+const BookModel = mongoose.model('Novels', bookSchema);
+module.exports = BookModel;
 
-//Validation:
-//require:true
-//unique
-// default
 
-//String
-//Number
-//Date
-//Boolean
-// Arrays
-// Object
-// ObjectId
-// Buffer - not cover
+// module.exports = mongoose.model('Books', bookSchema) //users
+
+
+
+/** Create a books collection in your DB ( using bookModel with following fields)- bookName( mandatory field), price containing Indian and european price, year ( should be 2021 if no year is provided) , tags array, authorName, totalPages , stockAvailable ( true false)  --- done
+
+create the following API’s (write logic in bookController and routes in routes):
+createBook : to create a new entry..use this api to create 11+ entries in your collection -- done
+
+bookList : gives all the books- their bookName and authorName only --done
+
+getBooksInYear: takes year as input in post request and gives list of all books published that year --done
+
+getParticularBooks:- (this is a good one, make sincere effort to solve this) take any input and use it as a condition to fetch books that satisfy that condition
+e.g if body had { name: “hi”} then you would fetch the books with this name   ---done
+
+if body had { year: 2020} then you would fetch the books in this year
+hence the condition will differ based on what you input in the request body   --done
+
+getXINRBooks- request to return all books who have an Indian price tag of “100INR” or “200INR” or “500INR”  --done
+
+getRandomBooks - returns books that are available in stock or have more than 500 pages 
+ */
