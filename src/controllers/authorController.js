@@ -1,26 +1,23 @@
-const { count } = require("console")
-const AuthorModel= require("../models/authorModel")
-const NewBookModel= require("../models/newBookModel");
+const AuthorModel = require("../models/authorModel.js");
 
-const createAuthor= async function (req, res) {
-    let data= req.body
-
-    let savedData= await AuthorModel.create(data)
-    res.send({msg: savedData});
+const createAuthors = async function(req,res){
+    
+        let author = req.body;
+        let authorCreated = await AuthorModel.create(author);
+ res.send({data: authorCreated})
+    
 }
 
-//Find the books which costs between 50-100(50,100 inclusive) and respond back with the author names of respective books.. 
-
-
-const getbookPrice = async function (req, res) {
-const bookList = await NewBookModel.find( { price : { $gte: 50, $lte: 100} } ).select({ author_id :1})
-let author = author.map(author => author.author_id === bookList.author_id)
-res.send({msg:bookList})
-}
-
+const getBookByChetan = async function(req, res) {
+  let author = await AuthorModel.findOne({ author_name: 'Chetan Bhagat' },null, { timeout: 30000 }).populate('books');
   
-  
-  
-module.exports.createAuthor = createAuthor;
-// module.exports.getAuthorName = getAuthorName;
-module.exports.getbookPrice = getbookPrice;
+ 
+if (!author) {
+      res.send({ msg: "No books found for Chetan Bhagat" });
+      return;
+  }
+  res.send({ msg: author.books });
+};
+
+module.exports.createAuthors = createAuthors;
+module.exports.getBookByChetan = getBookByChetan;

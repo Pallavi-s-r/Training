@@ -1,15 +1,26 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const authorScehma = new mongoose.Schema( {
-    author_id : {
-        type:Number,
-    required : true} ,
-    author_name: String, 
-     age : Number,
-    address :  mongoose.Schema.Types.Mixed,
-    // isDeleted: Boolean //true on book deletion i.e you flag the document/data as isDeleted: true..(mark "dirty")
+const AuthorSchema = new Schema({
+  author_id: {
+    type: String,
+    required: true,
+   
+  },
+  author_name: {
+    type: String,
+    required: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  }
+});
 
-}, { timestamps: true });
+const Author = mongoose.model('Author', AuthorSchema);
 
-
-module.exports = mongoose.model('Author', authorScehma);
+module.exports = Author;
