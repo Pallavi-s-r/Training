@@ -1,14 +1,14 @@
-const publisherModel = require("../models/publisherModel")
+
 const PublisherModel= require("../models/publisherModel")
 
 const createPublisher= async function (req, res) {
     let publisher = req.body
     let publisherCreated = await PublisherModel.create(publisher)
-    res.send({data: publisherCreated})
+    res.send({data: publisherCreated},{timeout:30000})
 }
 
 const getPublisherData= async function (req, res) {
-    let publisher = await publisherModel.find()
+    let publisher = await PublisherModel.find()
     res.send({data: publisher})
 }
 
