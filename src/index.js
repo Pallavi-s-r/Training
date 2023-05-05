@@ -2,13 +2,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const route = require('./routes/route.js');
 const { default: mongoose } = require('mongoose');
+const { loggingMiddleware } = require('./middleWares/middleWare.js');
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(loggingMiddleware); // add the middleware
 
-mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzotr.mongodb.net/Pritesh8769811-DB?retryWrites=true&w=majority", {
+app.get('/createUser', (req, res) => {
+ res.send("Its working in right direction")
+});
+
+mongoose.connect("mongodb+srv://pallavisinghsgrl9:qdFrRJpIqI3Ukw1l@cluster1.v7suuf1.mongodb.net/test", {
     useNewUrlParser: true
 })
 .then( () => console.log("MongoDb is connected"))
