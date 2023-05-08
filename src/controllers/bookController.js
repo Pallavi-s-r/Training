@@ -1,133 +1,65 @@
-const BookModel = require("../models/bookModel.js");
-const AuthorModel = require("../models/authorModel.js");
-
+const bookModel = require("../models/bookModel");
+const { get } = require("../routes/route");
 
 const createBooks = async function(req,res){
-        let books = req.body;
-        let bookCreated = await BookModel.create(books);
-         res.send({data: bookCreated});
-    
-};
+    let data = req.body;
+    const bookCreated = await bookModel.create(data);
+    res.send({msg:bookCreated});
+}
 
-const updatePrice = async function(req, res) {
+const bookData = async function(req,res){
+    const dataSaved = await bookModel.find();
+    res.send({msg:dataSaved});
+}
+
+const bookNameWithAuthorName = async function(req,res){
+const bookWithAuthor = await bookModel.find({},{bookName:1,authorName:1})
+res.send({bookWithAuthor})
+}
+
+const updateTag = async function(req,res){
+    const data = await bookModel.updateOne({$set : {tags :["a","b"]}},{new:true});
+    res.send({msg:data});
+}
+
+//getBooksInYear: takes year as input in post request and gives list of all books published that year
  
-    // Find the book by title and update its price
-    let book = await BookModel.findOneAndUpdate(
-      { name: "Two states" },
-      {$set:{ price: 100 }}, null, { timeout: 30000 }
-    );
+const booksByYear = async function(req, res){
+    let year = req.body.year;
+  let books = await bookModel.find({year:year},{bookName:1,authorName:1})
+  res.send({msg : books})
+}
 
-    // Find the author of the book using the author_id field in the book schema
-    let author = await AuthorModel.findById(book.author_id);
+//getXINRBooks- request to return all books who have an Indian price tag of “100INR” or “200INR” or “500INR” 
 
-    // Send back the author name and updated price in the response
-    res.send({
-      author_name: author.author_name,
-      price: book.price
-    });
- 
-};
+const addPriceField = async function(req,res){
+   const newField =  await bookModel.updateMany({}, { $set: { price: {INR : "200INR" , EUR : "2.5EUR"} } },{upsert:true});
+   res.send({msg:newField});
+}
 
-
-
-const getBooksByPriceRange = async function(req, res) {
-  
-    // Find all books that cost between 50-100 (inclusive)
-    const books = await BookModel.find({ price: { $gte: 50, $lte: 100 } }).select({ author_id: 1 });
-
-    // Get the author names corresponding to the author IDs
-    const authorNames = await Promise.all(books.map(async book => {
-      const author = await AuthorModel.findById(book.author_id);
-      return author.author_name;
-    }));
-
-    // Create a response object with the author names
-    const result = { author_names: authorNames };
-
-    // Send the response back
-    res.send(result);
+const getINRBooks = async function(req,res){
+    const INRbooks = await bookModel.find({INR : {$in:["200"]}},{bookName:1, authorName:1});
+    res.send({msg:INRbooks});
+}
 
 
-const books1 = await BookModel.find({price:{$gte :50, $lte:100}}).populate('author');
+//getRandomBooks - returns books that are available in stock or have more than 500 pages-
+// const addPriceField = async function(req,res){
+//     const newField =  await bookModel.updateMany({}, { $set: { price: {INR : "200INR" , EUR : "2.5EUR"} } },{upsert:true});
+//     res.send({msg:newField});
+//  }
 
-// Extract the author names from the result
-const authorNames1 = books1.map(book => book.author_id.author_name);
+const getStocks = async function(req,res){
+    const available = await bookModel.find({stockAvailable : true},{bookName:1, authorName:1});
+    res.send({msg:available});
+}
 
-// Create a response object with the author names
-const response = { author_names: authorNames1 };
+module.exports.getStocks = getStocks;
+module.exports.getINRBooks = getINRBooks
 
-// Send the response back
-res.send(response);
-
- 
-};
-
-// 
-
-
-
-// const BookModel = require("../models/bookModel.js");
-// const AuthorModel = require("../models/authorModel.js");
-
-// const createBooks = async function(req, res) {
-//   try {
-//     let books = req.body;
-//     let bookCreated = await BookModel.create(books);
-//     res.send({ data: bookCreated });
-//   } catch (error) {
-//     console.error('Error creating books:', error);
-//     res.status(500).send({ error: 'Internal server error' });
-//   }
-// };
-
-const addIsHardCover = async function(req, res) {
-  try {
-    // Update all books published by 'Penguin' and 'HarperCollins' to add the "isHardCover" property with a value of true
-    const updatedBooks = await BookModel.updateMany({ publisher: { $in: ['Penguin', 'HarperCollins'] } }, { $set: { isHardCover: true } });
-    console.log('Successfully added the "isHardCover" property to the Book schema.');
-    res.send({ msg: updatedBooks });
-  } catch (error) {
-    console.error('Error updating isHardCover key:', error);
-    res.status(500).send({ error: 'Internal server error' });
-  }
-};
-
-const updatePriceByAuthorRating = async function(req, res) {
-  try {
-    // Find all books that have an author with rating greater than 3.5
-    const books = await BookModel.find({}).populate('author');
-
-    // Update the price of these books
-    const updatedBooks = await Promise.all(books.map(async book => {
-      if (book.author && book.author.rating > 3) {
-        // Increase price by 10
-        book.price += 10;
-        await book.save();
-      }
-      return book;
-    }));
-
-    res.send({ data: updatedBooks });
-  } catch (error) {
-    console.error('Error updating book price:', error);
-    res.status(500).send({ error: 'Internal server error' });
-  }
-};
-
+module.exports.addPriceField =addPriceField
+module.exports.booksByYear = booksByYear;
+module.exports.bookNameWithAuthorName = bookNameWithAuthorName
 module.exports.createBooks = createBooks;
-module.exports.addIsHardCover = addIsHardCover;
-module.exports.updatePriceByAuthorRating = updatePriceByAuthorRating;
-
-
-module.exports.updatePriceByAuthorRating=updatePriceByAuthorRating;
-module.exports.createBooks = createBooks;
-module.exports.getBooksByPriceRange = getBooksByPriceRange;
-module.exports.addIsHardCover=addIsHardCover;
-module.exports.updatePrice = updatePrice;
-// module.exports.updateIsHardCoverKey=updateIsHardCoverKey;
-// const getBookByChetan = async function(req, res) {
-//     let author = await AuthorModel.findOne({ author_name: 'Chetan Bhagat' }).populate('books');
-//     res.send({ msg: author.books });
-//   };
-
-// module.exports.getBookByChetan = getBookByChetan;
+module.exports.bookData = bookData;
+module.exports
