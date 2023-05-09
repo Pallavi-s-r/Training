@@ -34,12 +34,7 @@ const createProduct= async function (req, res) {
 }
 
 const createUser= async function (req, res) {
-    // if (!req.header('isFreeAppUser')) {
-    //     return res.status(400).json({ error: 'Missing mandatory header: isFreeAppUser' });
-    //   }
-    // let data= req.body
-    // let savedData= await UserModel.create(data)
-    // res.send({msg: savedData})
+   
     const createUser = async function (req, res) {
         const isFreeAppUser = req.header('isFreeAppUser');
         if (!isFreeAppUser) {
@@ -110,5 +105,3 @@ module.exports.createUser= createUser;
 
 
 
-// module.exports.getUsersData= getUsersData
-// module.exports.basicCode= basicCode
