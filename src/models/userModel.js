@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema( {
     lastName: String,
     mobile: {
         type: String,
-
         required: true
     },
     emailId: String,
@@ -15,6 +14,6 @@ const userSchema = new mongoose.Schema( {
         enum: ["male", "female", "other"]
     },
     age: Number,
-}, { timestamps: true });
+}, { timestamps: true },{bufferTimeoutMs : 30000});
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('AuthenticateUser', userSchema)
