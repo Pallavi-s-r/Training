@@ -2,13 +2,17 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel.js");
 
 const createUser = async function (req, res) {
+  try{
   let data = req.body;
   let savedData = await userModel.create(data);
   res.send({ msg: savedData });
+  }catch(err){
+    res.status(500).send({err:"Internal server error"});
+  }
 };
 
 const loginUser = async function (req, res) {
-  let userName = req.body.emailId;
+ try{ let userName = req.body.emailId;
   let password = req.body.password;
 
   let user = await userModel.findOne({ emailId: userName, password: password });
@@ -20,20 +24,26 @@ const loginUser = async function (req, res) {
   let token = jwt.sign({userId: user._id.toString()},"technetium-batch");
   res.setHeader("x-auth-token", token);
   res.send({ status: true, token: token });
+ }catch(err){
+  res.status(500).send({err:"Internal server error"});
+}
 };
 
 const getUserData = async function (req, res) {
-
+try{
   let userId = req.params.userId;
   let userDetails = await userModel.findById(userId);
   if (!userDetails)
     return res.send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
+}catch(err){
+  res.status(500).send({err:"Internal server error"});
+}
 };
 
 const updatedUserAttribute = async function (req, res) {
-
+try{
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
   if (!user) {
@@ -47,9 +57,13 @@ const updatedUserAttribute = async function (req, res) {
     {new: true}
   );
   res.send({ status:true , data: updatedUserAttribute });
+}catch(err){
+  res.status(500).send({err:"Internal server error"});
+}
 };
 
 const updateIsDelete = async function (req, res) {
+  try{
   const userIdInfo = req.params.userId;
   let user = await userModel.findById(userIdInfo);
   //Return an error if no user with the given id exists in the db
@@ -61,6 +75,9 @@ const updateIsDelete = async function (req, res) {
   let updatedIsDeleted= await userModel.findOneAndUpdate({ _id: userIdInfo },{ isDeleted:true},{new:true});
   res.send({ status: updatedIsDeleted, data: updatedIsDeleted });
  }
+}catch(err){
+  res.status(500).send({err:"Internal server error"});
+}
 };
 
 module.exports.createUser = createUser;
