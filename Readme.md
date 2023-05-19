@@ -1,6 +1,5 @@
 ## MERN STACK - 
 
-MERN Stack Full FormMERN Stack ComponentsWhy Should You Work With MERN Stack?Use Cases of MERNChoose The Right Software Development ProgramView More
 MERN stack is a collection of technologies that enables faster application development. It is used by developers worldwide. The main purpose of using MERN stack is to develop apps using JavaScript only. This is because the four technologies that make up the technology stack are all JS-based. Thus, if one knows JavaScript (and JSON), the backend, frontend, and database can be operated easily. 
 
 ### MERN Stack Full Form-
@@ -15,6 +14,7 @@ It is a contraction for four different technologies as mentioned below:
 ### N - NodeJS
 
 ### CREATE A BACKEND PROJECT -
+
 Considering you’ve downloaded and configured all the four aforementioned technologies, you need to know how to create a new project folder to get started with the MERN stack. Next, you need to open the folder on the CMD (or terminal) and enter the following command to initialize a package.json file:
 
 ## npm init
