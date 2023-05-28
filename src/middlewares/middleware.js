@@ -12,8 +12,8 @@ const validEmail = async function (req, res, next) {
         const found = email.match(pattern);
         if (!found) {
             return res.status(400).send({ status: false, msg: "You give wrong Email format" })
-        }
-        next()
+        } 
+        next() 
     }
     catch (error) {
         return res.status(500).send({ status: false, msg: error.message })
@@ -93,7 +93,19 @@ const validBlogId = async function (req, res, next) {
     }
 }
 
-
+const validPassword= (req,res,next)=> {
+  try {
+    let password = req.body.password;
+    for(let i=0; i<password.length; i++) {
+      if(password[i]==" ")
+        return res.status(400).send({status:false,msg:"provide valid password (password does not contain SPACE)"})
+    }
+    next();
+  }
+  catch (error) {
+    return res.status(500).send({ status: false, msg: error.message })
+  }
+}
 
 
 
@@ -102,5 +114,6 @@ module.exports = {
   validAuthor,
   validBlogId,
   validEmail,
-  uniqueEmail
+  uniqueEmail,
+  validPassword
 };

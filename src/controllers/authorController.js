@@ -1,27 +1,9 @@
 const authorModel = require("../models/author");
 const jwt = require("jsonwebtoken");
-function checkName(name) {
-  const paragraph = name;
-  const regex = "^[A-Za-z][a-z]{1,30}$";
-  const check = paragraph.match(regex);
-  return check;
-}
+
 const createAuthor = async (req, res) => {
   try {
     const { fname, lname, title, email, password } = req.body;
-    let check = checkName(fname);
-    if (!check) {
-      return res
-        .status(400)
-        .send({ status: false, msg: "first name should contains only letter" });
-    }
-    check = checkName(lname);
-    if (!check) {
-      return res
-        .status(400)
-        .send({ status: false, msg: "last name should contains only letter" });
-    }
-
     const data = {
       fname: fname,
       lname: lname,
