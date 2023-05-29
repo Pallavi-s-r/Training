@@ -1,27 +1,35 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-const authorModel=new mongoose.Schema({
-    fname:{
-        type: String,
-        required:true
-    }, 
-    lname :{
-        type:String,
-        required:true
+const authorModel = new mongoose.Schema(
+  {
+    fname: {
+      type: String,
+      required: true,
+      trim: true
     },
-    title:{
-        type : String,
-        enum : ["Mr", "Mrs", "Miss"],
-        required:true
+    lname: {
+      type: String,
+      required: true,
+      trim: true
     },
-    email:{
-        type:String,
-        required:true
+    title: {
+      type: String,
+      enum: ["Mr", "Mrs", "Miss"],
+      required: true,
+      trim:true
     },
-    password:{
-        type:String,
-        required:true
-    }
-},{timestamps:true});
+    email: {
+      type: String,
+      required: true,
+      unique:true,
+      trim:true
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports=mongoose.model('authorData',authorModel);
+module.exports = mongoose.model("authorData", authorModel);
