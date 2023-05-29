@@ -9,6 +9,7 @@ const validEmail = async function (req, res, next) {
 
         const pattern =
           /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+          
         const found = email.match(pattern);
         if (!found) {
             return res.status(400).send({ status: false, msg: "You give wrong Email format" })
@@ -21,19 +22,19 @@ const validEmail = async function (req, res, next) {
     
 }
 
-  const uniqueEmail=async function(req,res,next){
-    try {
-      const uEmail = req.body.email;
-      let checkEmail = await authorModel.findOne({ email: uEmail });
-      if (checkEmail) {
-        return res.status(401).send({status:false,msg:"emailId already exist"});
-      }
-      next();
-    } catch (error) {
-      return res.status(500).send({ status: false, msg: error.message });
-    }
+const uniqueEmail=async function(req,res,next){
+   try {
+     const uEmail = req.body.email;
+     let checkEmail = await authorModel.findOne({ email: uEmail });
+     if (checkEmail) {
+      return res.status(401).send({status:false,msg:"emailId already exist"});
+     }
+     next();
+   } catch (error) {
+     return res.status(500).send({ status: false, msg: error.message });
+   }
 
-  }
+}
 
 const reqBodyCheck = async function (req, res, next) {
     try {
@@ -49,6 +50,7 @@ const reqBodyCheck = async function (req, res, next) {
         return res.status(500).send({ status: false, msg: error.message })
     }
 }
+
 
 const validAuthor = async function (req, res, next) {
     try {
@@ -73,7 +75,7 @@ const validAuthor = async function (req, res, next) {
     catch (error) {
         return res.status(500).send({ status: false, msg: error.message })
     }
-  }
+}
 
 const validBlogId = async function (req, res, next) {
     try {
@@ -98,25 +100,7 @@ const validBlogId = async function (req, res, next) {
     catch (error) {
         return res.status(500).send({ status: false, msg: error.message })
     }
-};
-
-const validPassword = (req, res, next) => {
-  try {
-    let password = req.body.password;
-    for (let i = 0; i < password.length; i++) {
-      if (password[i] == " ")
-        return res
-          .status(400)
-          .send({
-            status: false,
-            msg: "provide valid password (password does not contain SPACE)",
-          });
-    }
-    next();
-  } catch (error) {
-    return res.status(500).send({ status: false, msg: error.message });
-  }
-};
+}
 
 
 
@@ -127,6 +111,5 @@ module.exports = {
   validAuthor,
   validBlogId,
   validEmail,
-  uniqueEmail,
-  validPassword
+  uniqueEmail
 };
