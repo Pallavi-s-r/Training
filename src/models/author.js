@@ -6,15 +6,14 @@ const authorModel=new mongoose.Schema({
         required:true,
         trim: true,
         minLength:[2,"First name should be at least 2 characters long"],
-        validate:[/^[A-Za-z][a-z]/,"First name should contains only letters "]
+        validate:[/^[A-Za-z][a-z]{1,50}$/,"First name should contains only letters and first letter only capital e.g- Swarnendu"]
         }, 
     lname :{
-        type:String,
+        type: String,
         required:true,
         trim: true,
         minLength:[2,"Last name should be at least 2 characters long"],
-        validate:[/^[A-Za-z][a-z]/,"Last name should contains only letters"]
-        
+        validate:[/[A-Za-z][a-z]{1,50}$/,"Last name should contains only letters and first letter only capital e.g- Dey"]
     },
     title:{
         type : String,
