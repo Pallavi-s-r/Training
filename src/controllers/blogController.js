@@ -2,9 +2,27 @@ const blog = require("../models/blog");
 const blogModel = require("../models/blog");
 const moment = require("moment");
 
+
+//
+function checkTags(tags) {
+  let arr=[];
+  for(let i=0;i<tags.length;i++){
+    let c=1;
+  for(let j=0;j<tags[i].length;j++){
+      if(tags[i][j]!=" ")
+        c=0;
+    }
+    if (!(tags[i]==""||c)) {
+      arr.push(tags[i]);
+    }
+}
+return arr;
+}
+
+
 const createBlog = async function (req, res) {
   try {
-    const data = req.body;
+    let data = req.body;
     const authdata = data.authorId;
     let authId = req.decodedToken.authorId;
     if (authdata != authId) {
@@ -13,6 +31,9 @@ const createBlog = async function (req, res) {
         .send({ status: false, msg: "not a valid author to create a blog" });
       //   if isDeleted true in database or we are passing different attributes in query params
     }
+    data.tags=checkTags(data.tags);
+    data.subcategory=checkTags(data.subcategory);
+
     const blog = await blogModel.create(data);
     res.status(201).send({ status: true, data: blog });
   } catch (error) {
@@ -43,8 +64,10 @@ const getBlogData = async (req, res) => {
 const updatedBlog = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    const { title, body, tags, subcategory } = req.body;
+    let { title, body, tags, subcategory } = req.body;
 
+     tags=checkTags(tags);
+    subcategory=checkTags(subcategory);
     let updateContent = {
       title: title,
       body: body,
@@ -106,6 +129,11 @@ const deleteBlogByPathParam = async (req, res) => {
 
 const deleteBlogByQueryParam = async (req, res) => {
   try {
+    
+  /* This code is checking if the `authorId` in the query parameters of the request matches the
+  `authorId` of the decoded token. If they do not match, it returns a 404 status with a message
+  indicating that the filter `authorId` is not matched with the login author. This is a security
+  measure to ensure that only the author who created the blog can modify or delete it. */
     let filterData = req.query;
     let authId = req.decodedToken.authorId;
     if (filterData["authorId"] != authId && filterData["authorId"])

@@ -16,14 +16,14 @@ const blogSchema = new mongoose.Schema({
         required:true
     }, 
     tags: {
-        type: [String]
+        type: [{type:String,trim:true}]
     }, 
     category: {
         type: String,
         required: true
     }, 
     subcategory: {
-        type: [String]
+        type: [{type:String,trim:true}]
     }, 
     deletedAt: {
         type: Date,

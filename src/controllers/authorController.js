@@ -9,6 +9,9 @@ function checkName(name) {
 const createAuthor = async (req, res) => {
   try {
     const { fname, lname, title, email, password } = req.body;
+    if (!fname || !lname || !title || !email || !password) {
+      return res.status(400).send({ status: false, msg: "Missing required fields" });
+    }
     let check = checkName(fname);
     if (!check) {
       return res
